@@ -1,0 +1,3471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of Development</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.25rem;
+            padding: 0.5rem 0;
+        }
+        
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            color: #fbbf24;
+        }
+        
+        /* Search bar styling */
+        .nav-search-wrapper {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 1.5rem;
+            display: none;
+        }
+        
+        @media (min-width: 992px) {
+            .nav-search-wrapper {
+                display: block;
+            }
+        }
+        
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(251, 191, 36, 0.5);
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.25);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .search-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: color 0.3s ease;
+        }
+        
+        .search-button:hover {
+            color: rgba(251, 191, 36, 1);
+        }
+        
+        /* Navigation links */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 991px) {
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: rgba(251, 191, 36, 1);
+        }
+        
+        .nav-link.active {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(251, 191, 36, 0.2);
+            color: rgba(251, 191, 36, 1);
+        }
+        
+        .sun-icon {
+            display: none;
+        }
+        
+        .moon-icon {
+            display: block;
+        }
+        
+        body.light-theme .sun-icon {
+            display: block;
+        }
+        
+        body.light-theme .moon-icon {
+            display: none;
+        }
+        
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        @media (max-width: 991px) {
+            .nav-buttons {
+                display: none;
+            }
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.25rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline {
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: transparent;
+        }
+        
+        .btn-outline:hover {
+            border-color: rgba(251, 191, 36, 0.6);
+            color: rgba(251, 191, 36, 1);
+        }
+        
+        .btn-primary {
+            background-color: rgba(251, 191, 36, 0.9);
+            color: rgba(17, 24, 39, 1);
+            border: 1px solid transparent;
+        }
+        
+        .btn-primary:hover {
+            background-color: rgba(251, 191, 36, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+        
+        /* Mobile menu button */
+        .mobile-menu-button {
+            display: none;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        @media (max-width: 991px) {
+            .mobile-menu-button {
+                display: block;
+            }
+        }
+
+        .login-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(251, 191, 36, 0.6);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-right: 0.5rem;
+            display: none;
+        }
+
+        .signup-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background-color: #fbbf24;
+            color: #111827;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .login-button, .signup-button {
+                display: block;
+            }
+        }
+
+        .login-button:hover {
+            background-color: rgba(251, 191, 36, 0.1);
+            border-color: #fbbf24;
+        }
+
+        .signup-button:hover {
+            background-color: #f59e0b;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background-color: #111827;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            display: none;
+            z-index: 99;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+        }
+
+        .mobile-nav-link {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav-link:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-nav-link a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            transition: color 0.2s ease;
+        }
+
+        .mobile-nav-link a:hover {
+            color: #fbbf24;
+        }
+
+        .mobile-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .mobile-buttons .login-button,
+        .mobile-buttons .signup-button {
+            display: block;
+            flex: 1;
+            text-align: center;
+        }
+        
+        /* Grid Background */
+        .grid-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.5;
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .vertical-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1rem;
+        }
+        
+        .horizontal-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 1rem;
+        }
+        
+        .vertical-line {
+            height: 100%;
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .horizontal-line {
+            width: 100%;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Header Section */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            padding: 8rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+        }
+        
+        @media (min-width: 768px) {
+            .hero-section {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            flex: 1;
+        }
+        
+        @media (min-width: 768px) {
+            .hero-content {
+                text-align: left;
+                padding-right: 2rem;
+            }
+        }
+        
+        .hero-3d-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            flex: 1;
+        }
+        
+        @media (min-width: 768px) {
+            .hero-3d-container {
+                height: 500px;
+            }
+        }
+        
+        /* Interactive 3D Element */
+        .interactive-3d {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: auto;
+            opacity: 0.6;
+        }
+        
+        @media (min-width: 768px) {
+            .interactive-3d {
+                height: 100%;
+            }
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero-description {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 48rem;
+            margin: 0 auto 3rem;
+            animation: fadeInUp 0.6s ease 0.2s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1rem;
+            margin: 2rem 0 0;
+            max-width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .stats-container {
+                margin: 2rem auto;
+                max-width: 400px;
+            }
+        }
+        
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(252, 211, 77, 0.4);
+            background-color: rgba(251, 191, 36, 0.05);
+            backdrop-filter: blur(8px);
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .stat-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .stat-icon {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: rgba(251, 191, 36, 0.2);
+        }
+        
+        .stat-text {
+            text-align: left;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: rgb(252, 211, 77);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgba(252, 211, 77, 0.7);
+        }
+        
+        /* Features Section */
+        .features-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .features-title {
+            font-size: 2.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .features-description {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 36rem;
+            margin: 0 auto 3rem;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+        
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(252, 211, 77, 0.4);
+            background-color: rgba(251, 191, 36, 0.1);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.2);
+            filter: brightness(1.2);
+        }
+        
+        .feature-card-gradient {
+            position: absolute;
+            inset: 0;
+            border-radius: 0.75rem;
+            background: linear-gradient(to bottom, rgba(252, 211, 77, 0.05), rgba(217, 119, 6, 0.2));
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .feature-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            background-color: rgba(251, 191, 36, 0.2);
+            color: rgb(252, 211, 77);
+        }
+        
+        .feature-status {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+            border-width: 1px;
+        }
+        
+        .status-new {
+            background-color: rgba(34, 197, 94, 0.2);
+            color: rgb(134, 239, 172);
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+        
+        .status-beta {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: rgb(147, 197, 253);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .status-stable {
+            background-color: rgba(234, 179, 8, 0.2);
+            color: rgb(253, 224, 71);
+            border-color: rgba(234, 179, 8, 0.4);
+        }
+        
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-description {
+            color: rgba(252, 211, 77, 0.7);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-metrics {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .metrics-label {
+            font-size: 0.875rem;
+            color: rgba(252, 211, 77, 0.7);
+        }
+        
+        .metrics-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: rgb(252, 211, 77);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            max-width: 48rem;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease 0.3s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .cta-title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        
+        .cta-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            background-color: rgb(234, 179, 8);
+            color: rgb(17, 24, 39);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .cta-button:hover {
+            background-color: rgb(251, 191, 36);
+            transform: scale(1.05);
+        }
+        
+        .cta-button:active {
+            transform: scale(0.95);
+        }
+        
+        .cta-button-icon {
+            margin-left: 0.5rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+        
+        .delay-4 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-5 {
+            animation-delay: 0.5s;
+        }
+        
+        .delay-6 {
+            animation-delay: 0.6s;
+        }
+        
+        /* Testimonials Section */
+        .testimonials-section {
+            margin: 4rem 0;
+            padding: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(17, 24, 39, 0.98);
+            border-top: 1px solid rgba(251, 191, 36, 0.1);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+        }
+        
+        .testimonials-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+            background: linear-gradient(to right, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .testimonials-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.125rem;
+            max-width: 36rem;
+            margin: 0 auto 3rem;
+            text-align: center;
+        }
+        
+        .testimonials-scroll-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .scroll-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(251, 191, 36, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(251, 191, 36, 0.9);
+            z-index: 5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .scroll-indicator:hover {
+            background-color: rgba(251, 191, 36, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .scroll-indicator:active {
+            transform: scale(0.95);
+        }
+        
+        .scroll-indicator-left {
+            transform: rotate(0);
+        }
+        
+        .scroll-indicator-right {
+            transform: rotate(0);
+        }
+        
+        .testimonials-container {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            overflow-x: auto;
+            -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+            scrollbar-width: none;  /* Hide scrollbar for Firefox */
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            scroll-behavior: smooth;
+            flex: 1;
+            margin: 0 1rem;
+        }
+        
+        .testimonials-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+        }
+        
+        .testimonial-card {
+            min-width: 350px;
+            max-width: 350px;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(252, 211, 77, 0.4);
+            background-color: rgba(251, 191, 36, 0.05);
+            backdrop-filter: blur(8px);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .testimonial-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #fbbf24, #d97706);
+            opacity: 0.8;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(251, 191, 36, 0.2);
+            border-color: rgba(252, 211, 77, 0.6);
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            position: relative;
+        }
+        
+        .testimonial-content::before {
+            content: "\201C";
+            position: absolute;
+            top: -20px;
+            left: -5px;
+            font-size: 4rem;
+            color: rgba(251, 191, 36, 0.2);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+            padding-top: 1.25rem;
+        }
+        
+        .author-avatar {
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background-color: rgba(251, 191, 36, 0.2);
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgb(252, 211, 77);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .author-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+        
+        .author-position {
+            font-size: 0.9rem;
+            color: rgba(252, 211, 77, 0.7);
+            margin-top: 0.2rem;
+        }
+        
+        .scroll-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            padding: 0.75rem 1.5rem;
+            background-color: rgba(251, 191, 36, 0.1);
+            border-radius: 20px;
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .scroll-arrow svg {
+            margin: 0 0.5rem;
+            animation: horizontalBounce 1.5s infinite;
+        }
+        
+        @keyframes horizontalBounce {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(10px);
+            }
+        }
+        
+        /* Remove the scroll lock indicator as we're not using it anymore */
+        .scroll-lock-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(251, 191, 36, 0.9);
+            color: #111827;
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 9999;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            display: none;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            animation: fadeIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+        
+        /* Style for when body has scroll lock */
+        body.scroll-locked {
+            overflow: hidden !important;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(252, 211, 77, 0.2);
+            padding: 5rem 0;
+            position: relative;
+            z-index: 10;
+            margin-top: 2rem;
+        }
+        
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .newsletter-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .newsletter-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .input-group {
+            display: flex;
+            width: 100%;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        @media (max-width: 576px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .newsletter-button {
+                margin-top: 1rem;
+                width: 100%;
+                border-radius: 0.5rem !important;
+            }
+            
+            .newsletter-input {
+                border-radius: 0.5rem !important;
+            }
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 1px solid rgba(252, 211, 77, 0.3);
+            border-right: none;
+            border-radius: 0.5rem 0 0 0.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-input:focus {
+            border-color: rgba(252, 211, 77, 0.6);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+        }
+        
+        .newsletter-button {
+            padding: 1rem 1.5rem;
+            background-color: #fbbf24;
+            color: #1e293b;
+            font-weight: 600;
+            border: none;
+            border-radius: 0 0.5rem 0.5rem 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-button svg {
+            transition: transform 0.3s ease;
+        }
+        
+        .newsletter-button:hover {
+            background-color: #f59e0b;
+        }
+        
+        .newsletter-button:hover svg {
+            transform: translateX(4px);
+        }
+        
+        .newsletter-button:active {
+            transform: scale(0.98);
+        }
+        
+        .newsletter-privacy {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 1rem;
+        }
+        
+        .newsletter-success {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: #fbbf24;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+        
+        .newsletter-success svg {
+            margin-bottom: 1rem;
+            color: #4ade80;
+        }
+        
+        .newsletter-success h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .newsletter-success p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(251, 191, 36, 0.8);
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000; /* Increased z-index to ensure visibility */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            opacity: 1; /* Make visible by default */
+            transform: translateY(0); /* No initial transform */
+            transition: all 0.3s ease;
+            pointer-events: auto; /* Explicitly enable interactions */
+        }
+        
+        .back-to-top:hover {
+            background-color: rgba(251, 191, 36, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Interactive 3D Element */
+        .interactive-3d {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: auto;
+            opacity: 0.6;
+        }
+        
+        @media (min-width: 768px) {
+            .interactive-3d {
+                height: 100%;
+            }
+        }
+        
+        /* Make the hero content appear on top of the 3D element */
+        .hero-title, .hero-description, .stats-container {
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Footer & Social Links Styles */
+        .footer-section {
+            background-color: rgba(17, 24, 39, 0.95);
+            border-top: 1px solid rgba(252, 211, 77, 0.2);
+            padding: 3rem 0 2rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+        
+        .footer-logo {
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .footer-logo {
+                margin-bottom: 0;
+            }
+        }
+        
+        .footer-tagline {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 300px;
+        }
+        
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: rgba(251, 191, 36, 0.1);
+            color: rgba(251, 191, 36, 0.9);
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: rgba(251, 191, 36, 0.2);
+            color: rgba(251, 191, 36, 1);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (min-width: 768px) {
+            .footer-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+        
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .copyright {
+                margin-bottom: 0;
+            }
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-links a:hover {
+            color: rgba(251, 191, 36, 0.9);
+        }
+        
+        /* Client Logos Section */
+        .client-logos-section {
+            padding: 4rem 0 2rem;
+            background-color: rgba(17, 24, 39, 0.03);
+            border-top: 1px solid rgba(252, 211, 77, 0.1);
+            border-bottom: 1px solid rgba(252, 211, 77, 0.1);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            color: rgba(17, 24, 39, 0.9);
+        }
+        
+        .logos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(17, 24, 39, 0.7);
+            transition: all 0.3s ease;
+        }
+        
+        .logo-item:hover {
+            color: rgba(251, 191, 36, 0.9);
+            transform: translateY(-2px);
+        }
+        
+        .logo-item span {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        body.dark-theme .client-logos-section {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        body.dark-theme .section-title {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        body.dark-theme .logo-item {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            padding: 5rem 0;
+            background-color: rgba(17, 24, 39, 0.02);
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-question {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(17, 24, 39, 0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background-color: rgba(251, 191, 36, 0.05);
+        }
+        
+        .faq-question .arrow-icon {
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            color: rgba(251, 191, 36, 0.9);
+        }
+        
+        .faq-question[aria-expanded="true"] .arrow-icon {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 1.25rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-answer p {
+            margin-bottom: 1rem;
+            color: rgba(17, 24, 39, 0.7);
+            line-height: 1.6;
+        }
+        
+        .faq-answer ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: rgba(17, 24, 39, 0.7);
+        }
+        
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 1.25rem 1.25rem;
+            max-height: 1000px;
+        }
+        
+        body.dark-theme .faq-item {
+            background-color: rgba(31, 41, 55, 0.7);
+        }
+        
+        body.dark-theme .faq-question {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        body.dark-theme .faq-question:hover {
+            background-color: rgba(251, 191, 36, 0.1);
+        }
+        
+        body.dark-theme .faq-answer p,
+        body.dark-theme .faq-answer ul {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Blog Preview Section */
+        .blog-preview-section {
+            padding: 80px 20px;
+            background-color: white;
+        }
+        
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        @media (min-width: 768px) {
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .blog-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .blog-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .blog-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .blog-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background-color: rgba(251, 191, 36, 0.9);
+            color: rgba(17, 24, 39, 0.9);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .blog-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .blog-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: rgba(17, 24, 39, 0.9);
+            line-height: 1.4;
+        }
+        
+        .blog-excerpt {
+            color: rgba(17, 24, 39, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .blog-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            color: rgba(17, 24, 39, 0.6);
+        }
+        
+        .blog-read-more {
+            color: rgba(251, 191, 36, 0.9);
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .blog-read-more:hover {
+            color: rgba(251, 191, 36, 1);
+        }
+        
+        .blog-view-all {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+        
+        body.dark-theme .blog-preview-section {
+            background-color: rgba(17, 24, 39, 0.98);
+        }
+        
+        body.dark-theme .blog-card {
+            background-color: rgba(31, 41, 55, 0.7);
+        }
+        
+        body.dark-theme .blog-title {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        body.dark-theme .blog-excerpt {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        body.dark-theme .blog-meta {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Roadmap Section Styles */
+        .roadmap-section {
+            padding: 80px 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 50px;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .roadmap-timeline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .roadmap-column {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .roadmap-column:hover {
+            transform: translateY(-5px);
+        }
+        
+        .roadmap-column-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .roadmap-heading {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .roadmap-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .roadmap-badge-released {
+            background-color: #dff6dd;
+            color: #107c10;
+        }
+        
+        .roadmap-badge-progress {
+            background-color: #fff4ce;
+            color: #9d5d00;
+        }
+        
+        .roadmap-badge-planned {
+            background-color: #deecf9;
+            color: #0078d4;
+        }
+        
+        .roadmap-items {
+            padding: 20px;
+        }
+        
+        .roadmap-item {
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .roadmap-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .roadmap-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .roadmap-item-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .roadmap-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .roadmap-item p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .roadmap-feedback {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .roadmap-feedback p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        /* Dark theme adjustments for roadmap */
+        .dark-theme .roadmap-section {
+            background-color: #1a1a1a;
+        }
+        
+        .dark-theme .roadmap-column,
+        .dark-theme .roadmap-feedback {
+            background-color: #2d2d2d;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dark-theme .section-subtitle,
+        .dark-theme .roadmap-date,
+        .dark-theme .roadmap-item p {
+            color: #b0b0b0;
+        }
+        
+        .dark-theme .roadmap-item-header h4,
+        .dark-theme .roadmap-heading {
+            color: #ffffff;
+        }
+        
+        .dark-theme .roadmap-item {
+            border-bottom-color: #3d3d3d;
+        }
+        
+        .dark-theme .roadmap-column-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Advanced Background Pattern */
+        .grid-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 1));
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            opacity: 0.7;
+        }
+
+        .pattern-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 25px),
+                repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 25px);
+        }
+
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(251, 191, 36, 0.15);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .particle:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 20%;
+            animation-delay: 0s;
+            opacity: 0.4;
+            filter: blur(40px);
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .particle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 70%;
+            animation-delay: 1s;
+            opacity: 0.3;
+            filter: blur(50px);
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .particle:nth-child(3) {
+            width: 120px;
+            height: 120px;
+            top: 30%;
+            left: 80%;
+            animation-delay: 2s;
+            opacity: 0.2;
+            filter: blur(45px);
+            background: rgba(251, 191, 36, 0.15);
+        }
+
+        .particle:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            top: 80%;
+            left: 30%;
+            animation-delay: 3s;
+            opacity: 0.2;
+            filter: blur(60px);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .particle:nth-child(5) {
+            width: 200px;
+            height: 200px;
+            top: 40%;
+            left: 40%;
+            animation-delay: 4s;
+            opacity: 0.2;
+            filter: blur(70px);
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(10px, 10px) scale(1.05);
+            }
+            50% {
+                transform: translate(20px, -20px) scale(1);
+            }
+            75% {
+                transform: translate(-10px, 15px) scale(0.95);
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        .grid-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        body.dark-theme .grid-background {
+            background: linear-gradient(to bottom, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 1));
+        }
+
+        body.light-theme .grid-background {
+            background: linear-gradient(to bottom, rgba(240, 245, 255, 0.9), rgba(240, 245, 255, 1));
+        }
+
+        body.light-theme .particle:nth-child(1) {
+            background: rgba(251, 191, 36, 0.3);
+        }
+
+        body.light-theme .particle:nth-child(2) {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        body.light-theme .pattern-overlay {
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 25px),
+                repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 1px, transparent 1px, transparent 25px);
+        }
+
+        body.light-theme .grid-lines {
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 L3 14 L12 14 L11 22 L21 10 L12 10 L13 2 Z"></path></svg>
+                </div>
+                DevFuture
+            </div>
+            <div class="nav-search-wrapper">
+                <form class="search-form" role="search" aria-label="Site search">
+                    <input type="search" class="search-input" placeholder="Search..." aria-label="Search">
+                    <button type="submit" class="search-button" aria-label="Submit search">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                </form>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Features</a>
+                <a href="#" class="nav-link">Pricing</a>
+                <a href="#" class="nav-link">Documentation</a>
+                <a href="#" class="nav-link">Blog</a>
+                <div class="theme-toggle" aria-label="Toggle dark/light mode">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <a href="#" class="btn btn-outline">Log in</a>
+                <a href="#" class="btn btn-primary">Sign up</a>
+            </div>
+            <button class="mobile-menu-button" aria-label="Toggle menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-nav-links">
+            <li class="mobile-nav-link"><a href="#">Home</a></li>
+            <li class="mobile-nav-link"><a href="#">Features</a></li>
+            <li class="mobile-nav-link"><a href="#">Pricing</a></li>
+            <li class="mobile-nav-link"><a href="#">Documentation</a></li>
+            <li class="mobile-nav-link"><a href="#">Blog</a></li>
+        </ul>
+        <div class="mobile-buttons">
+            <button class="login-button">Log in</button>
+            <button class="signup-button">Sign up</button>
+        </div>
+    </div>
+
+    <!-- Grid Background -->
+    <div class="grid-background" id="gridBackground">
+        <div class="background-pattern"></div>
+        <div class="pattern-overlay"></div>
+        <div class="grid-lines"></div>
+        <div class="particles-container">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+
+    <!-- Scroll Lock Indicator -->
+    <div class="scroll-lock-indicator" id="scrollLockIndicator">Scroll Horizontally</div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">The Future of Development</h1>
+                <p class="hero-description">
+                    Build faster, scale smarter, and deploy with confidence using our cutting-edge platform designed for modern applications.
+                </p>
+
+                <!-- Statistics -->
+                <div class="stats-container">
+                    <div class="stat-card delay-1">
+                        <div class="stat-content">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                            <div class="stat-text">
+                                <div class="stat-value">10M+</div>
+                                <div class="stat-label">Active Users</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card delay-2">
+                        <div class="stat-content">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-code-2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+                            </div>
+                            <div class="stat-text">
+                                <div class="stat-value">1B+</div>
+                                <div class="stat-label">API Requests Daily</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card delay-3">
+                        <div class="stat-content">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                            </div>
+                            <div class="stat-text">
+                                <div class="stat-value">99.99%</div>
+                                <div class="stat-label">Service Uptime</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-3d-container">
+                <div id="interactive3D" class="interactive-3d"></div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 class="features-title">Powerful Features for Modern Applications</h2>
+            <p class="features-description">
+                Our platform provides everything you need to build, deploy, and scale your next project with confidence.
+            </p>
+
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card delay-1">
+                    <div class="feature-card-gradient"></div>
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        </div>
+                        <span class="feature-status status-stable">STABLE</span>
+                    </div>
+                    <h3 class="feature-title">Lightning Fast Performance</h3>
+                    <p class="feature-description">Experience blazing speeds with our optimized architecture that delivers results in milliseconds. Built with cutting-edge technology for maximum efficiency.</p>
+                    <div class="feature-metrics">
+                        <span class="metrics-label">Average Response Time</span>
+                        <span class="metrics-value">0.1ms</span>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="feature-card delay-2">
+                    <div class="feature-card-gradient"></div>
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+                        </div>
+                        <span class="feature-status status-stable">STABLE</span>
+                    </div>
+                    <h3 class="feature-title">Advanced Security</h3>
+                    <p class="feature-description">Enterprise-grade protection with end-to-end encryption and comprehensive threat monitoring. Regular security audits and compliance with industry standards.</p>
+                    <div class="feature-metrics">
+                        <span class="metrics-label">Uptime Guarantee</span>
+                        <span class="metrics-value">99.99%</span>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-card delay-3">
+                    <div class="feature-card-gradient"></div>
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        </div>
+                        <span class="feature-status status-stable">STABLE</span>
+                    </div>
+                    <h3 class="feature-title">Seamless Integration</h3>
+                    <p class="feature-description">Connect with your existing tools through our extensive API and pre-built connectors. Support for popular frameworks and platforms out of the box.</p>
+                    <div class="feature-metrics">
+                        <span class="metrics-label">Integration Partners</span>
+                        <span class="metrics-value">100+</span>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="feature-card delay-4">
+                    <div class="feature-card-gradient"></div>
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </div>
+                        <span class="feature-status status-new">NEW</span>
+                    </div>
+                    <h3 class="feature-title">Global Edge Network</h3>
+                    <p class="feature-description">Deploy your applications across our worldwide network of edge locations for minimal latency and maximum availability.</p>
+                    <div class="feature-metrics">
+                        <span class="metrics-label">Global Locations</span>
+                        <span class="metrics-value">50+</span>
+                    </div>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="feature-card delay-5">
+                    <div class="feature-card-gradient"></div>
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cpu"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                        </div>
+                        <span class="feature-status status-beta">BETA</span>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Insights</h3>
+                    <p class="feature-description">Leverage machine learning algorithms to gain actionable insights from your data in real-time. Predictive analytics and anomaly detection built-in.</p>
+                    <div class="feature-metrics">
+                        <span class="metrics-label">Daily Predictions</span>
+                        <span class="metrics-value">1B+</span>
+                    </div>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="feature-card delay-6">
+                    <div class="feature-card-gradient"></div>
+                    <div class="feature-header">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                        </div>
+                        <span class="feature-status status-new">NEW</span>
+                    </div>
+                    <h3 class="feature-title">Serverless Computing</h3>
+                    <p class="feature-description">Focus on your code while we handle the infrastructure. Auto-scaling, zero maintenance, and pay-only-for-what-you-use pricing.</p>
+                    <div class="feature-metrics">
+                        <span class="metrics-label">Auto-scaling</span>
+                        <span class="metrics-value">∞</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+            
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+            <div class="container">
+                <h2 class="testimonials-title">What Our Users Say</h2>
+                <p class="testimonials-description">
+                    See how our platform has helped others achieve their development goals.
+                </p>
+
+                <div class="testimonials-scroll-wrapper">
+                    <div class="scroll-indicator scroll-indicator-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </div>
+
+                    <div class="testimonials-container" id="testimonialsContainer">
+                        <!-- Testimonial 1 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The Future of Development has been a game-changer for our team. It's allowed us to scale our application without any hassle. Highly recommended!"
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="author-info">
+                                    <div class="author-name">John Doe</div>
+                                    <div class="author-position">Software Engineer</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 2 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "I've been using The Future of Development for a few months now, and the platform has exceeded my expectations. The performance is amazing!"
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="author-info">
+                                    <div class="author-name">Jane Smith</div>
+                                    <div class="author-position">Product Manager</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Testimonial 3 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The serverless computing feature has revolutionized our deployment process. We've cut down infrastructure costs by 60% and increased deployment speed dramatically."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="author-info">
+                                    <div class="author-name">Alice Johnson</div>
+                                    <div class="author-position">CTO</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 4 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The AI-powered insights feature has given us visibility into patterns we never knew existed in our data. It's like having a data scientist working for us 24/7."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="author-info">
+                                    <div class="author-name">Robert Chen</div>
+                                    <div class="author-position">Data Analyst</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 5 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "Our team migrated from a complex legacy system to DevFuture in just two weeks. The seamless integration with our existing tools made the transition painless."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="author-info">
+                                    <div class="author-name">Sarah Williams</div>
+                                    <div class="author-position">Integration Specialist</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Testimonial 6 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The global edge network has been a game-changer for our users in Asia and Europe. Page load times decreased by 70% which translated to a 25% increase in conversions."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="author-info">
+                                    <div class="author-name">Michael Garcia</div>
+                                    <div class="author-position">Growth Manager</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scroll-indicator scroll-indicator-right">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    </div>
+                </div>
+
+                <div class="scroll-arrow">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2h16v-2H4zm0 7v2h16v-2H4z"/></svg>
+                        Scroll with mouse wheel
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8l4 4-4 4"/><path d="M3 12h18"/></svg>
+                    </span>
+                </div>
+            </div>
+        </section>
+            
+        <!-- Client Logos Section -->
+        <section class="client-logos-section">
+            <div class="container">
+                <h2 class="section-title text-center">Trusted by leading companies</h2>
+                <div class="logos-container">
+                    <div class="logo-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        <span>LinkedIn</span>
+                    </div>
+                    <div class="logo-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        <span>GitHub</span>
+                    </div>
+                    <div class="logo-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        <span>Facebook</span>
+                    </div>
+                    <div class="logo-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                        <span>Twitter</span>
+                    </div>
+                    <div class="logo-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        <span>Airbnb</span>
+                    </div>
+                    <div class="logo-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M20.12 12.71a6 6 0 0 0 0-1.42m0 1.42H3m17.12 0a6 6 0 0 1-5.41 5.41m5.41-5.41A6 6 0 0 0 15.29 7a6 6 0 0 0-1.42 0m6.25 5.71-6.25 6.25M8.71 7a6 6 0 0 0-5.41 5.29m5.41-5.29a6 6 0 0 1 5.16 0m-5.16 0L3.29 12.29m0 0a6 6 0 0 0 5.41 5.41m-5.41-5.41 5.41 5.41m0 0a6 6 0 0 0 1.42 0"></path></svg>
+                        <span>Slack</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+            
+        <!-- Roadmap Section -->
+        <section class="roadmap-section">
+            <div class="container">
+                <h2 class="section-title text-center">Our Roadmap</h2>
+                <p class="section-subtitle text-center">See what we're building next and what's coming soon</p>
+                
+                <div class="roadmap-timeline">
+                    <!-- Released -->
+                    <div class="roadmap-column">
+                        <div class="roadmap-column-header">
+                            <h3 class="roadmap-heading">Released</h3>
+                            <div class="roadmap-badge roadmap-badge-released">Live</div>
+                        </div>
+                        <div class="roadmap-items">
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>Real-time Collaboration</h4>
+                                    <span class="roadmap-date">May 2023</span>
+                                </div>
+                                <p>Code with your team in real-time with cursor presence, chat, and inline comments.</p>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>AI Code Assistant</h4>
+                                    <span class="roadmap-date">June 2023</span>
+                                </div>
+                                <p>Get intelligent code suggestions, autocompletion, and bug fixing as you code.</p>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>CI/CD Pipeline Integration</h4>
+                                    <span class="roadmap-date">July 2023</span>
+                                </div>
+                                <p>Seamlessly connect your development workflow with popular CI/CD platforms.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- In Progress -->
+                    <div class="roadmap-column">
+                        <div class="roadmap-column-header">
+                            <h3 class="roadmap-heading">In Progress</h3>
+                            <div class="roadmap-badge roadmap-badge-progress">Building</div>
+                        </div>
+                        <div class="roadmap-items">
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>Advanced Testing Framework</h4>
+                                    <span class="roadmap-date">Q3 2023</span>
+                                </div>
+                                <p>Integrated testing tools with AI-assisted test generation and visual regression testing.</p>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>Performance Analytics</h4>
+                                    <span class="roadmap-date">Q3 2023</span>
+                                </div>
+                                <p>Deep insights into your application performance, bottlenecks, and optimization opportunities.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Planned -->
+                    <div class="roadmap-column">
+                        <div class="roadmap-column-header">
+                            <h3 class="roadmap-heading">Planned</h3>
+                            <div class="roadmap-badge roadmap-badge-planned">Coming Soon</div>
+                        </div>
+                        <div class="roadmap-items">
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>Multi-language Containerization</h4>
+                                    <span class="roadmap-date">Q4 2023</span>
+                                </div>
+                                <p>One-click containerization for any application stack with optimized configurations.</p>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>AI-powered Code Review</h4>
+                                    <span class="roadmap-date">Q4 2023</span>
+                                </div>
+                                <p>Automated code reviews with security scanning, best practice suggestions, and more.</p>
+                            </div>
+                            <div class="roadmap-item">
+                                <div class="roadmap-item-header">
+                                    <h4>Enterprise SSO Integration</h4>
+                                    <span class="roadmap-date">Q1 2024</span>
+                                </div>
+                                <p>Single sign-on with popular identity providers and custom authentication solutions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="roadmap-feedback">
+                    <p>Have a feature request? We'd love to hear from you!</p>
+                    <a href="#" class="btn btn-primary">Submit Feedback</a>
+                </div>
+            </div>
+        </section>
+            
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="container">
+                <h2 class="section-title text-center">Frequently Asked Questions</h2>
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>What makes DevFuture different from other platforms?</span>
+                            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>DevFuture combines cutting-edge technology with an intuitive interface to provide developers with the fastest, most reliable development experience. Our platform offers real-time collaboration, integrated CI/CD pipelines, and intelligent code suggestions that adapt to your coding style.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>How much does DevFuture cost?</span>
+                            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>We offer flexible pricing plans to suit different needs:</p>
+                            <ul>
+                                <li><strong>Free Tier:</strong> Perfect for individuals and small projects.</li>
+                                <li><strong>Pro Plan ($15/month):</strong> Ideal for professional developers with unlimited projects and advanced features.</li>
+                                <li><strong>Team Plan ($49/month):</strong> Designed for teams with enhanced collaboration tools and admin controls.</li>
+                                <li><strong>Enterprise:</strong> Custom pricing for large organizations with dedicated support and custom integrations.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>Can I migrate my existing projects to DevFuture?</span>
+                            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes! We provide seamless migration tools that support importing projects from GitHub, GitLab, Bitbucket, and other popular platforms. Our smart migration assistant will guide you through the process and help maintain your project history, issues, and configurations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>What programming languages and frameworks are supported?</span>
+                            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>DevFuture supports all major programming languages and frameworks, including:</p>
+                            <ul>
+                                <li>JavaScript/TypeScript (React, Vue, Angular, Node.js)</li>
+                                <li>Python (Django, Flask, FastAPI)</li>
+                                <li>Ruby (Rails)</li>
+                                <li>PHP (Laravel, Symfony)</li>
+                                <li>Java, Kotlin, Scala</li>
+                                <li>Go, Rust, C/C++, C#</li>
+                                <li>And many more!</li>
+                            </ul>
+                            <p>We're constantly adding support for new languages and frameworks based on community feedback.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <button class="faq-question" aria-expanded="false">
+                            <span>How secure is DevFuture for storing my code?</span>
+                            <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Security is our top priority. DevFuture employs industry-leading security measures including:</p>
+                            <ul>
+                                <li>End-to-end encryption for all code and data</li>
+                                <li>SOC 2 Type II certification</li>
+                                <li>Regular third-party security audits</li>
+                                <li>Two-factor authentication</li>
+                                <li>Role-based access controls</li>
+                                <li>Private networking options for Enterprise customers</li>
+                            </ul>
+                            <p>We also offer self-hosted solutions for organizations with specific compliance requirements.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+            
+        <!-- Blog Preview Section -->
+        <section class="blog-preview-section">
+            <div class="container">
+                <h2 class="section-title text-center">Latest from Our Blog</h2>
+                <div class="blog-grid">
+                    <div class="blog-card">
+                        <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')">
+                            <div class="blog-tag">Development</div>
+                        </div>
+                        <div class="blog-content">
+                            <h3 class="blog-title">10 Essential DevOps Practices for 2023</h3>
+                            <p class="blog-excerpt">Learn how top teams are leveraging automation and CI/CD to accelerate their development workflows.</p>
+                            <div class="blog-meta">
+                                <span class="blog-date">June 12, 2023</span>
+                                <span class="blog-read-time">7 min read</span>
+                            </div>
+                            <a href="#" class="blog-read-more">Read more →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-card">
+                        <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')">
+                            <div class="blog-tag">Tutorial</div>
+                        </div>
+                        <div class="blog-content">
+                            <h3 class="blog-title">Building Scalable Microservices with DevFuture</h3>
+                            <p class="blog-excerpt">A step-by-step guide to creating resilient microservices architecture using our platform's advanced features.</p>
+                            <div class="blog-meta">
+                                <span class="blog-date">May 28, 2023</span>
+                                <span class="blog-read-time">12 min read</span>
+                            </div>
+                            <a href="#" class="blog-read-more">Read more →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-card">
+                        <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3')">
+                            <div class="blog-tag">Case Study</div>
+                        </div>
+                        <div class="blog-content">
+                            <h3 class="blog-title">How Acme Corp Reduced Deployment Time by 80%</h3>
+                            <p class="blog-excerpt">Discover how this enterprise client transformed their development pipeline and achieved dramatic efficiency gains.</p>
+                            <div class="blog-meta">
+                                <span class="blog-date">May 15, 2023</span>
+                                <span class="blog-read-time">9 min read</span>
+                            </div>
+                            <a href="#" class="blog-read-more">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-view-all">
+                    <a href="#" class="btn btn-outline">View all articles</a>
+                </div>
+            </div>
+        </section>
+            
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3 class="cta-title">Ready to Transform Your Development Experience?</h3>
+            <p class="cta-description">
+                Join thousands of developers who are already building the future with our platform.
+            </p>
+            <button class="cta-button">
+                Get Started Now
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cta-button-icon"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2 class="newsletter-title">Stay Updated</h2>
+                <p class="newsletter-description">Subscribe to our newsletter for the latest updates, tips, and exclusive offers.</p>
+                
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" placeholder="Enter your email address" required class="newsletter-input">
+                        <button type="submit" class="newsletter-button">
+                            Subscribe
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                        </button>
+                    </div>
+                    <div class="newsletter-privacy">
+                        We respect your privacy. Unsubscribe at any time.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 L3 14 L12 14 L11 22 L21 10 L12 10 L13 2 Z"></path></svg>
+                        </div>
+                        DevFuture
+                    </div>
+                    <p class="footer-tagline">Building the future of development, one line of code at a time.</p>
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://www.facebook.com/" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    </a>
+                    <a href="https://twitter.com/" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+                    </a>
+                    <a href="https://www.instagram.com/akakami_007/" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                    <a href="https://github.com/" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">© 2023 DevFuture. All rights reserved.</p>
+                
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Back to Top button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('backToTop');
+            
+            if (backToTopButton) {
+                backToTopButton.addEventListener('click', function() {
+                    console.log('Back to top clicked');
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
+        
+        // Grid Background Animation based on mouse movement
+        const gridBackground = document.getElementById('gridBackground');
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX * 0.01;
+            const y = e.clientY * 0.01;
+            
+            gridBackground.style.transform = `translate(${x}px, ${y}px)`;
+        });
+        
+        // Animation for feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-5px)';
+                card.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.2)';
+                card.style.filter = 'brightness(1.2)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'none';
+                card.style.filter = 'brightness(1)';
+            });
+        });
+        
+        // CTA Button Animation
+        const ctaButton = document.querySelector('.cta-button');
+        
+        ctaButton.addEventListener('mouseenter', () => {
+            ctaButton.style.transform = 'scale(1.05)';
+        });
+        
+        ctaButton.addEventListener('mouseleave', () => {
+            ctaButton.style.transform = 'scale(1)';
+        });
+        
+        ctaButton.addEventListener('mousedown', () => {
+            ctaButton.style.transform = 'scale(0.95)';
+        });
+        
+        ctaButton.addEventListener('mouseup', () => {
+            ctaButton.style.transform = 'scale(1.05)';
+        });
+        
+        // Mobile Menu Toggle Functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.mobile-nav-link a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link, .mobile-nav-link a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                
+                if (href === '#') {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+                
+                // Update active state
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                link.classList.add('active');
+            });
+        });
+        
+        // Testimonials horizontal scrolling enhancement
+        const testimonialsContainer = document.getElementById('testimonialsContainer');
+        const testimonialsSection = document.querySelector('.testimonials-section');
+        
+        // Add indicator for scrolling
+        const scrollArrow = document.querySelector('.scroll-arrow');
+        const scrollLeft = document.querySelector('.scroll-indicator-left');
+        const scrollRight = document.querySelector('.scroll-indicator-right');
+        
+        if (testimonialsContainer && scrollArrow) {
+            // Scroll amount for each click on arrows
+            const scrollAmount = 350; // Width of a single testimonial card
+            
+            // Scroll left and right with arrow buttons
+            if (scrollLeft) {
+                scrollLeft.addEventListener('click', function() {
+                    testimonialsContainer.scrollBy({
+                        left: -scrollAmount,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            if (scrollRight) {
+                scrollRight.addEventListener('click', function() {
+                    testimonialsContainer.scrollBy({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            // Check if we're at the end of scrolling and update the indicators
+            testimonialsContainer.addEventListener('scroll', () => {
+                const totalScrolled = testimonialsContainer.scrollLeft;
+                const scrollableWidth = testimonialsContainer.scrollWidth - testimonialsContainer.clientWidth;
+                
+                // Hide/show the scroll indicators based on scroll position
+                if (scrollLeft) {
+                    scrollLeft.style.opacity = totalScrolled <= 0 ? '0.3' : '1';
+                    scrollLeft.style.pointerEvents = totalScrolled <= 0 ? 'none' : 'auto';
+                }
+                
+                if (scrollRight) {
+                    scrollRight.style.opacity = totalScrolled >= scrollableWidth - 10 ? '0.3' : '1';
+                    scrollRight.style.pointerEvents = totalScrolled >= scrollableWidth - 10 ? 'none' : 'auto';
+                }
+                
+                // Update the text below the scrollable area
+                if (totalScrolled >= scrollableWidth - 50) {
+                    scrollArrow.innerHTML = 
+                        '<span>' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-7-7 7 7 7-7"/></svg>' +
+                        'End of testimonials' +
+                        '</span>';
+                    // Dispatch custom event instead of directly removing the class
+                    document.dispatchEvent(new CustomEvent('testimonials-scrolled-end'));
+                } else {
+                    scrollArrow.innerHTML = 
+                        '<span>' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v2h16v-2H4zm0 7v2h16v-2H4z"/></svg>' +
+                        'Scroll with mouse wheel' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8l4 4-4 4"/><path d="M3 12h18"/></svg>' +
+                        '</span>';
+                }
+            });
+            
+            // Trigger a scroll event to initialize the indicators
+            testimonialsContainer.dispatchEvent(new Event('scroll'));
+            
+            // Create an IntersectionObserver to detect when testimonials are in view
+            const testimonialsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && 
+                        testimonialsContainer.scrollWidth > testimonialsContainer.clientWidth) {
+                        // When testimonials section is in view and has scrollable content
+                        const scrollY = window.scrollY;
+                        document.body.classList.add('scroll-locked');
+                        document.body.style.top = `-${scrollY}px`;
+                        
+                        if (document.getElementById('scrollLockIndicator')) {
+                            document.getElementById('scrollLockIndicator').style.display = 'block';
+                            setTimeout(() => {
+                                document.getElementById('scrollLockIndicator').style.opacity = '1';
+                            }, 100);
+                        }
+                    } else if (!entry.isIntersecting) {
+                        // When testimonials section is not in view
+                        if (document.body.classList.contains('scroll-locked')) {
+                            const scrollY = document.body.style.top;
+                            document.body.classList.remove('scroll-locked');
+                            document.body.style.top = '';
+                            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                        }
+                        
+                        if (document.getElementById('scrollLockIndicator')) {
+                            document.getElementById('scrollLockIndicator').style.opacity = '0';
+                            setTimeout(() => {
+                                document.getElementById('scrollLockIndicator').style.display = 'none';
+                            }, 300);
+                        }
+                    }
+                });
+            }, { threshold: 0.2 }); // Trigger when 20% of the section is visible
+            
+            // Start observing the testimonials section
+            testimonialsObserver.observe(testimonialsSection);
+            
+            // Handle wheel events to scroll horizontally when user scrolls vertically
+            testimonialsSection.addEventListener('wheel', function(e) {
+                // Only if testimonials container needs scrolling (has overflow)
+                if (testimonialsContainer.scrollWidth > testimonialsContainer.clientWidth) {
+                    // Check if mouse is over the testimonials container or its children
+                    const rect = testimonialsContainer.getBoundingClientRect();
+                    const isMouseOverContainer = 
+                        e.clientX >= rect.left &&
+                        e.clientX <= rect.right &&
+                        e.clientY >= rect.top &&
+                        e.clientY <= rect.bottom;
+
+                    if (isMouseOverContainer) {
+                        // Prevent the default vertical scroll
+                        e.preventDefault();
+                        
+                        // Get the current scroll position and max scroll
+                        const totalScrolled = testimonialsContainer.scrollLeft;
+                        const scrollableWidth = testimonialsContainer.scrollWidth - testimonialsContainer.clientWidth;
+                        
+                        // Scroll horizontally by the deltaY amount with a multiplier for responsiveness
+                        testimonialsContainer.scrollBy({
+                            left: e.deltaY * 1.5,
+                            behavior: 'auto' // Use 'auto' instead of 'smooth' for more responsive scrolling
+                        });
+                        
+                        // Check if we've reached the end of horizontal scrolling
+                        if ((e.deltaY > 0 && totalScrolled >= scrollableWidth - 50) || 
+                            (e.deltaY < 0 && totalScrolled <= 0)) {
+                            // If we're trying to scroll past the beginning or end, remove the scroll lock
+                            if (e.deltaY > 0 && totalScrolled >= scrollableWidth - 50) {
+                                // Dispatch custom event instead of directly removing the class
+                                document.dispatchEvent(new CustomEvent('testimonials-scrolled-end'));
+                            }
+                        }
+                    }
+                }
+            }, { passive: false }); // passive: false is required to use preventDefault
+        }
+
+        // Newsletter form handling
+        const newsletterForm = document.querySelector('.newsletter-form');
+        
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailInput = this.querySelector('.newsletter-input');
+            const email = emailInput.value.trim();
+            
+            if (email) {
+                // Show success message
+                const formContent = this.innerHTML;
+                this.innerHTML = `
+                    <div class="newsletter-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <h3>Thank you for subscribing!</h3>
+                        <p>We've sent a confirmation to <strong>${email}</strong></p>
+                    </div>
+                `;
+                
+                // Reset form after 5 seconds for demo purposes
+                setTimeout(() => {
+                    this.innerHTML = formContent;
+                    emailInput.value = '';
+                }, 5000);
+            }
+        });
+    </script>
+
+    <!-- Separate script specifically for Back to Top button -->
+    <script>
+        // Isolated Back to Top button functionality
+        document.getElementById('backToTop').onclick = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+    </script>
+    
+    <!-- Main JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.querySelector('.theme-toggle');
+            const body = document.body;
+            const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            
+            // Check for saved theme preference or use the system preference
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.add('light-theme');
+            } else if (savedTheme === 'dark') {
+                body.classList.add('dark-theme');
+            } else if (prefersDarkScheme.matches) {
+                body.classList.add('dark-theme');
+            }
+            
+            // Toggle theme when clicked
+            themeToggle.addEventListener('click', function() {
+                if (body.classList.contains('dark-theme')) {
+                    body.classList.remove('dark-theme');
+                    body.classList.add('light-theme');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.classList.remove('light-theme');
+                    body.classList.add('dark-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+            
+            // FAQ accordion functionality
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    const faqItem = this.parentNode;
+                    const isActive = faqItem.classList.contains('active');
+                    
+                    // Close all FAQ items
+                    document.querySelectorAll('.faq-item').forEach(item => {
+                        item.classList.remove('active');
+                        item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                    });
+                    
+                    // Open the clicked FAQ item if it wasn't already active
+                    if (!isActive) {
+                        faqItem.classList.add('active');
+                        this.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            }
+            
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + / to toggle search focus
+                if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('.search-input');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }
+                
+                // Shift + D to toggle dark/light mode
+                if (e.shiftKey && e.key === 'D') {
+                    e.preventDefault();
+                    themeToggle.click();
+                }
+                
+                // Shift + T to scroll to top
+                if (e.shiftKey && e.key === 'T') {
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+            
+            // Implement lazy loading for images
+            if ('loading' in HTMLImageElement.prototype) {
+                // Browser supports native lazy loading
+                const lazyImages = document.querySelectorAll('img[data-src]');
+                lazyImages.forEach(img => {
+                    img.src = img.dataset.src;
+                    img.loading = 'lazy';
+                    img.classList.add('loaded');
+                });
+            } else {
+                // Fallback for browsers that don't support lazy loading
+                const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.add('loaded');
+                            observer.unobserve(lazyImage);
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    lazyImageObserver.observe(img);
+                });
+            }
+            
+            // Handle scroll locking for horizontal scrolling sections
+            let lastScrollY = window.scrollY;
+            let bodyScrollPosition = 0;
+            
+            // Replace the existing scroll event handler with a more robust implementation
+            window.addEventListener('scroll', function() {
+                if (document.body.classList.contains('scroll-locked')) {
+                    // If scroll is locked, prevent vertical scrolling by resetting to the stored position
+                    window.scrollTo(0, bodyScrollPosition);
+                } else {
+                    // Update the last scroll position when not locked
+                    lastScrollY = window.scrollY;
+                }
+            });
+            
+            // Intercept the unlocking of scrolling
+            document.addEventListener('testimonials-scrolled-end', function() {
+                if (document.body.classList.contains('scroll-locked')) {
+                    const scrollY = document.body.style.top;
+                    document.body.classList.remove('scroll-locked');
+                    document.body.style.top = '';
+                    window.scrollTo(0, parseInt(scrollY || '0') * -1);
+                    
+                    if (document.getElementById('scrollLockIndicator')) {
+                        document.getElementById('scrollLockIndicator').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('scrollLockIndicator').style.display = 'none';
+                        }, 300);
+                    }
+                }
+            });
+            
+            // Add keyboard support for horizontal scrolling
+            document.addEventListener('keydown', function(e) {
+                if (document.body.classList.contains('scroll-locked')) {
+                    const testimonialsContainer = document.querySelector('.testimonials-container');
+                    if (testimonialsContainer) {
+                        // Amount to scroll with each key press
+                        const scrollAmount = 350;
+                        
+                        // Right arrow key
+                        if (e.key === 'ArrowRight') {
+                            e.preventDefault();
+                            testimonialsContainer.scrollBy({
+                                left: scrollAmount,
+                                behavior: 'smooth'
+                            });
+                        }
+                        
+                        // Left arrow key
+                        if (e.key === 'ArrowLeft') {
+                            e.preventDefault();
+                            testimonialsContainer.scrollBy({
+                                left: -scrollAmount,
+                                behavior: 'smooth'
+                            });
+                        }
+                        
+                        // Check if we've reached the end after scrolling
+                        const totalScrolled = testimonialsContainer.scrollLeft;
+                        const scrollableWidth = testimonialsContainer.scrollWidth - testimonialsContainer.clientWidth;
+                        
+                        if (totalScrolled >= scrollableWidth - 20) {
+                            // Reached the end, remove scroll lock
+                            document.dispatchEvent(new CustomEvent('testimonials-scrolled-end'));
+                        }
+                    }
+                }
+            });
+
+            // Add touch support for mobile devices
+            const testimonialsSection = document.querySelector('.testimonials-section');
+            const testimonialsContainer = document.querySelector('.testimonials-container');
+            
+            if (testimonialsSection && testimonialsContainer) {
+                let touchStartX, touchStartY;
+                
+                testimonialsSection.addEventListener('touchstart', function(e) {
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                testimonialsSection.addEventListener('touchmove', function(e) {
+                    if (!touchStartX || !touchStartY) return;
+                    
+                    // Check if touch is over the testimonials container
+                    const rect = testimonialsContainer.getBoundingClientRect();
+                    const isTouchOverContainer = 
+                        e.touches[0].clientX >= rect.left &&
+                        e.touches[0].clientX <= rect.right &&
+                        e.touches[0].clientY >= rect.top &&
+                        e.touches[0].clientY <= rect.bottom;
+                    
+                    if (isTouchOverContainer && document.body.classList.contains('scroll-locked')) {
+                        // Prevent default to stop vertical scrolling when in locked mode
+                        e.preventDefault();
+                        
+                        const currentX = e.touches[0].clientX;
+                        const currentY = e.touches[0].clientY;
+                        const diffX = touchStartX - currentX;
+                        const diffY = touchStartY - currentY;
+                        
+                        // Get the current scroll position and max scroll
+                        const totalScrolled = testimonialsContainer.scrollLeft;
+                        const scrollableWidth = testimonialsContainer.scrollWidth - testimonialsContainer.clientWidth;
+                        
+                        // For both vertical and horizontal swipes - convert to horizontal scrolling
+                        testimonialsContainer.scrollBy({
+                            left: diffX * 1.5 + diffY * 1.5, // Use both axes for more intuitive control
+                            behavior: 'auto'
+                        });
+                        
+                        // Check if we've reached the end of horizontal scrolling
+                        if (totalScrolled + diffX >= scrollableWidth - 50) {
+                            // If we're at the end, remove scroll lock to allow page scrolling again
+                            document.dispatchEvent(new CustomEvent('testimonials-scrolled-end'));
+                        }
+                        
+                        touchStartX = currentX;
+                        touchStartY = currentY;
+                    }
+                }, { passive: false });
+                
+                testimonialsSection.addEventListener('touchend', function() {
+                    // Check if we've reached the end after touch ends
+                    const totalScrolled = testimonialsContainer.scrollLeft;
+                    const scrollableWidth = testimonialsContainer.scrollWidth - testimonialsContainer.clientWidth;
+                    
+                    if (totalScrolled >= scrollableWidth - 50) {
+                        // Reached the end, remove scroll lock
+                        document.dispatchEvent(new CustomEvent('testimonials-scrolled-end'));
+                    }
+                }, { passive: true });
+            }
+        });
+    </script>
+    
+    <!-- 3D Interactive Element Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - Initializing 3D');
+            
+            // Create the 3D scene
+            const container = document.getElementById('interactive3D');
+            console.log('3D container found:', container);
+            
+            if (!container) {
+                console.error('3D container not found!');
+                return;
+            }
+            
+            // Check if Three.js is loaded
+            if (typeof THREE === 'undefined') {
+                console.error('THREE.js library not loaded!');
+                return;
+            }
+            
+            console.log('THREE.js is loaded.');
+            
+            // Set up scene, camera, and renderer
+            const scene = new THREE.Scene();
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            // Create a perspective camera
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.z = 5;
+            
+            // Create WebGL renderer
+            const renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true 
+            });
+            renderer.setSize(width, height);
+            renderer.setClearColor(0x000000, 0); // Transparent background
+            container.appendChild(renderer.domElement);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            const pointLight = new THREE.PointLight(0xffffff, 0.8);
+            pointLight.position.set(2, 3, 4);
+            scene.add(pointLight);
+            
+            // Create a torus knot (more interesting than a cube)
+            const geometry = new THREE.TorusKnotGeometry(1, 0.4, 64, 8, 2, 3);
+            const material = new THREE.MeshStandardMaterial({ 
+                color: 0xfbbf24,
+                metalness: 0.7,
+                roughness: 0.2,
+                emissive: 0x222222
+            });
+            
+            const torusKnot = new THREE.Mesh(geometry, material);
+            scene.add(torusKnot);
+            
+            // Add some smaller spheres around the torus
+            const sphereGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+            
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const radius = 2.5;
+                
+                const sphere = new THREE.Mesh(
+                    sphereGeometry,
+                    new THREE.MeshStandardMaterial({
+                        color: 0xffd700,
+                        metalness: 0.5,
+                        roughness: 0.3,
+                        emissive: 0x222222
+                    })
+                );
+                
+                sphere.position.x = Math.cos(angle) * radius;
+                sphere.position.y = Math.sin(angle) * radius;
+                sphere.position.z = Math.sin(angle * 2) * 0.5;
+                
+                sphere.userData = {
+                    originalX: sphere.position.x,
+                    originalY: sphere.position.y,
+                    originalZ: sphere.position.z,
+                    angle: angle,
+                    radius: radius,
+                    speed: 0.02 + Math.random() * 0.03 // Increased from 0.01 + Math.random() * 0.01
+                };
+                
+                scene.add(sphere);
+            }
+            
+            // Mouse tracking
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            
+            // Track mouse movement
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 4 - 2; // Increased from 2 to 4
+                mouseY = -(event.clientY / window.innerHeight) * 4 + 2; // Increased from 2 to 4
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                
+                renderer.setSize(width, height);
+            });
+            
+            // Check if scene is in viewport
+            let isInViewport = true;
+            
+            function checkVisibility() {
+                const rect = container.getBoundingClientRect();
+                isInViewport = (
+                    rect.top < window.innerHeight &&
+                    rect.bottom > 0
+                );
+            }
+            
+            window.addEventListener('scroll', checkVisibility);
+            checkVisibility(); // Initial check
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                if (isInViewport) {
+                    // Smoothly move towards mouse position
+                    targetX = mouseX * 0.5; // Increased from 0.3 to 0.5
+                    targetY = mouseY * 0.5; // Increased from 0.3 to 0.5
+                    
+                    // Rotate the torus knot
+                    torusKnot.rotation.x += 0.015; // Increased from 0.01
+                    torusKnot.rotation.y += 0.015; // Increased from 0.01
+                    
+                    // Tilt the torus knot based on mouse position
+                    torusKnot.rotation.x += (targetY - torusKnot.rotation.x) * 0.2; 
+                    torusKnot.rotation.y += (targetX - torusKnot.rotation.y) * 0.2;
+                    
+                    // Add a slight position shift based on mouse
+                    torusKnot.position.x = mouseX * 0.3;
+                    torusKnot.position.y = mouseY * 0.3;
+                    
+                    // Animate the spheres
+                    scene.children.forEach(child => {
+                        if (child !== torusKnot && child.isMesh && child.userData && child.userData.angle !== undefined) {
+                            // Rotate spheres around the torus
+                            child.userData.angle += child.userData.speed * 1.5; // Increased speed by 50%
+                            
+                            child.position.x = Math.cos(child.userData.angle) * child.userData.radius;
+                            child.position.y = Math.sin(child.userData.angle) * child.userData.radius;
+                            child.position.z = Math.sin(child.userData.angle * 2) * 0.8; // Increased from 0.5 to 0.8
+                            
+                            // Make spheres pulse
+                            const pulse = 1 + Math.sin(Date.now() * 0.008 * child.userData.speed) * 0.2; // Increased from 0.005 to 0.008 and 0.1 to 0.2
+                            child.scale.set(pulse, pulse, pulse);
+                            
+                            // Rotate the spheres
+                            child.rotation.x += 0.03; // Increased from 0.02 to 0.03
+                            child.rotation.y += 0.03; // Increased from 0.02 to 0.03
+                            
+                            // React to mouse
+                            const distX = mouseX * 5 - child.position.x; // Increased from 3 to 5
+                            const distY = mouseY * 5 - child.position.y; // Increased from 3 to 5
+                            const distance = Math.sqrt(distX * distX + distY * distY);
+                            
+                            // Apply repulsion when mouse is near
+                            if (distance < 2.5) { // Increased from 1.5 to 2.5
+                                const force = 1 - (distance / 2.5); // Adjusted divisor to match new distance
+                                child.position.x -= distX * force * 0.06; // Doubled from 0.03 to 0.06
+                                child.position.y -= distY * force * 0.06; // Doubled from 0.03 to 0.06
+                            }
+                        }
+                    });
+                }
+                
+                // Render the scene
+                renderer.render(scene, camera);
+            }
+            
+            // Start animation
+            animate();
+        });
+    </script>
+    
+    <!-- Fix for testimonials navigation buttons -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Directly target the scroll buttons by class name
+            const leftButton = document.querySelector('.scroll-indicator-left');
+            const rightButton = document.querySelector('.scroll-indicator-right');
+            const container = document.getElementById('testimonialsContainer');
+            
+            if (leftButton && rightButton && container) {
+                console.log("Testimonial navigation buttons found, attaching events");
+                
+                // Remove any existing event listeners (just in case)
+                leftButton.replaceWith(leftButton.cloneNode(true));
+                rightButton.replaceWith(rightButton.cloneNode(true));
+                
+                // Get the fresh references after cloning
+                const newLeftButton = document.querySelector('.scroll-indicator-left');
+                const newRightButton = document.querySelector('.scroll-indicator-right');
+                
+                // Add new event listeners
+                newLeftButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("Left button clicked");
+                    container.scrollBy({
+                        left: -350,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                newRightButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log("Right button clicked");
+                    container.scrollBy({
+                        left: 350,
+                        behavior: 'smooth'
+                    });
+                });
+                
+                // Make sure the buttons are visible
+                newLeftButton.style.pointerEvents = 'auto';
+                newRightButton.style.pointerEvents = 'auto';
+                
+                // Initialize the scroll indicators
+                container.dispatchEvent(new Event('scroll'));
+            }
+        });
+    </script>
+    
+    <!-- Animated Background Effects -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const particles = document.querySelectorAll('.particle');
+            const bgPattern = document.querySelector('.background-pattern');
+            
+            // Add parallax effect to particles on mouse move
+            document.addEventListener('mousemove', function(e) {
+                const x = e.clientX;
+                const y = e.clientY;
+                
+                // Calculate movement based on mouse position
+                const moveX = (x - window.innerWidth / 2) / 50;
+                const moveY = (y - window.innerHeight / 2) / 50;
+                
+                // Apply different movement to each particle for depth effect
+                particles.forEach((particle, index) => {
+                    const depthFactor = (index + 1) * 0.2; // Different depth for each particle
+                    particle.style.transform = `translate(${moveX * depthFactor}px, ${moveY * depthFactor}px)`;
+                });
+                
+                // Subtle movement for the background pattern
+                if (bgPattern) {
+                    bgPattern.style.transform = `translate(${moveX * 0.1}px, ${moveY * 0.1}px)`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
